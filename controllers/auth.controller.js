@@ -49,7 +49,7 @@ const createUser = async (req, res) => {
   if (!firstName || !lastName || !email || !password) {
     return res.status(400).json({
       success: false,
-      message: "Enter all fields",
+      message: "Enter all user fields",
     });
   }
 
