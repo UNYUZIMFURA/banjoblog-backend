@@ -5,14 +5,14 @@ const jwt = require("jsonwebtoken");
 
 const login = async (req, res) => {
   const { email, password } = req.body;
-
+  // Require user to enter both email and password
   if (!email || !password) {
     return res.status(400).json({
       success: false,
       message: "Provide both email and password",
     });
   }
-
+// Find user with specified email
   const user = await prisma.user.findUnique({
     where: { email },
   });
@@ -23,7 +23,7 @@ const login = async (req, res) => {
       message: "User not found!",
     });
   }
-
+// Check validity of entered password
   const checkPassword = await bcrypt.compare(password, user.password);
 
   if (!checkPassword) {
@@ -32,7 +32,7 @@ const login = async (req, res) => {
       message: "Incorrect Password",
     });
   }
-
+// Assign token to email
   const token = jwt.sign({ email }, process.env.JWT_SECRET);
 
   return res.status(200).json({
@@ -42,7 +42,7 @@ const login = async (req, res) => {
   });
 };
 
-const signupUser = async (req, res) => {
+const createUser = async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
 
   // Check if user entered all fields
@@ -75,7 +75,7 @@ const signupUser = async (req, res) => {
     if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002') {
       return res.status(400).json({
         success: false,
-        message: "Email already exists!"
+        message: "Credentials already exist!"
       })
     }
     return res.status(500).json({
@@ -85,4 +85,4 @@ const signupUser = async (req, res) => {
   }
 };
 
-module.exports = { login, signupUser };
+module.exports = { login, createUser };
