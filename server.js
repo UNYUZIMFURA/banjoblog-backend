@@ -14,9 +14,9 @@ const swaggerOptions = {
     swaggerDefinition: {
         openapi: "3.0.0",
         info: {
-            title: "RTB MIS APIs",
+            title: "Banjo Blog APIs",
             version: "1.0.0",
-            description: "RTB API Documentation"
+            description: "Banjo Blog Documentation"
         }
     },
     apis: ["./routes/index.js"]

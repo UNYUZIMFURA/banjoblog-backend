@@ -132,14 +132,15 @@
 
 
 const express = require("express")
-const { findAllBooks, saveBooks } = require("../controllers/books.controller")
-const {createUser, login} = require("../controllers/auth.controller")
+const {createUser, login} = require("../controllers/users.controller")
+const { authenticateToken } = require("../middlewares/authenticateToken")
+const { listPosts, addPost } = require("../controllers/posts.controller")
 const router = express.Router()
 
-router.get("/books", findAllBooks)
-router.post("/books", saveBooks)
-router.post("/auth/users", createUser)
-router.post("/auth/login", login)
+router.post("/users", createUser)
+router.post("/users/login", login)
+router.get("/posts/all", listPosts)
+router.post("/posts/new", authenticateToken, addPost)
 
 
 module.exports = router

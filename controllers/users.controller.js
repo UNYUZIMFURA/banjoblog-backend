@@ -33,7 +33,10 @@ const login = async (req, res) => {
     });
   }
 // Assign token to email
-  const token = jwt.sign({ email }, process.env.JWT_SECRET);
+const token = jwt.sign(
+  { id: user.id, email: user.email },
+  process.env.JWT_SECRET,
+);
 
   return res.status(200).json({
     success: true,
@@ -43,10 +46,10 @@ const login = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
-  const { firstName, lastName, email, password } = req.body;
+  const { username, email, password } = req.body;
 
   // Check if user entered all fields
-  if (!firstName || !lastName || !email || !password) {
+  if (!username || !email || !password) {
     return res.status(400).json({
       success: false,
       message: "Enter all user fields",
@@ -56,11 +59,13 @@ const createUser = async (req, res) => {
   // Hash the password by 10 rounds
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const token = jwt.sign({ email }, process.env.JWT_SECRET);
+    const token = jwt.sign(
+      { id: user.id, email: user.email },
+      process.env.JWT_SECRET,
+    );
     const user = await prisma.user.create({
       data: {
-        firstName,
-        lastName,
+        username,
         email,
         password: hashedPassword
       }
