@@ -1,85 +1,17 @@
+const express = require("express");
+const {
+  listPosts,
+  addPost,
+  editPost,
+  deletePost,
+} = require("../controllers/posts.controller");
+const { createUser, login } = require("../controllers/users.controller");
+const { authenticateToken } = require("../middlewares/authenticateToken");
+const { addComment, editComment, deleteComment } = require("../controllers/comments.controller");
 
-/**
- * @swagger
- * components:
- *   schemas:
- *     Book:
- *       type: object
- *       required:
- *         - name
- *         - author
- *         - publisher
- *         - publicationYear
- *         - subject
- *       properties:
- *         name:
- *           type: string
- *           description: The name of the book
- *         author:
- *           type: string
- *           description: The author of the book
- *         publisher:
- *           type: string
- *           description: The publisher of the book
- *         publicationYear:
- *           type: integer
- *           description: The year the book was published
- *         subject:
- *           type: string
- *           description: The subject of the book
- *     User:
- *       type: object
- *       required:
- *         - firstName
- *         - lastName
- *         - email
- *         - password
- *       properties:
- *         firstName:
- *           type: string
- *           description: The first name of the user
- *         lastName:
- *           type: string
- *           description: The last name of the user
- *         email:
- *           type: string
- *           description: The email of the user
- *         password:
- *           type: string
- *           description: The password of the user
- */
+const router = express.Router();
 
-/**
- * @swagger
- * /api/v1/books:
- *   get:
- *     summary: Retrieve a list of books
- *     responses:
- *       200:
- *         description: A list of books
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Book'
- *   post:
- *     summary: Create a new book
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Book'
- *     responses:
- *       200:
- *         description: The created book
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Book'
- */
-
+// Users routes
 /**
  * @swagger
  * /auth/users:
@@ -100,6 +32,11 @@
  *               $ref: '#/components/schemas/User'
  *       400:
  *         description: User creation error
+ */
+router.post("/auth/users", createUser);
+
+/**
+ * @swagger
  * /auth/login:
  *   post:
  *     summary: Login a user
@@ -129,18 +66,13 @@
  *       400:
  *         description: Login error
  */
+router.post("/auth/users/login", login);
+router.get("/posts", listPosts);
+router.post("/posts", authenticateToken, addPost);
+router.put("/posts/:id", authenticateToken, editPost); 
+router.delete("/posts/:id", authenticateToken, deletePost);
+router.post("/comments/:id", authenticateToken, addComment)
+router.put("/posts/:id", authenticateToken, editComment)
+router.delete("/posts/:id", deleteComment)
 
-
-const express = require("express")
-const {createUser, login} = require("../controllers/users.controller")
-const { authenticateToken } = require("../middlewares/authenticateToken")
-const { listPosts, addPost } = require("../controllers/posts.controller")
-const router = express.Router()
-
-router.post("/users", createUser)
-router.post("/users/login", login)
-router.get("/posts/all", listPosts)
-router.post("/posts/new", authenticateToken, addPost)
-
-
-module.exports = router
+module.exports = router;
