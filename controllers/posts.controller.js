@@ -35,8 +35,8 @@ const listPosts = async (req, res) => {
 }
 
 
-const addPost = async (req, res) => {
-    const { title, content, } = req.body
+const addPost = async (req, res) => { 
+    const { title, content} = req.body
     if (!title || !content) {
         return res.status(400).json({
             success: false,

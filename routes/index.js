@@ -5,7 +5,7 @@ const {
   editPost,
   deletePost,
 } = require("../controllers/posts.controller");
-const { createUser, login } = require("../controllers/users.controller");
+const { createUser, login, deleteUser } = require("../controllers/users.controller");
 const { authenticateToken } = require("../middlewares/authenticateToken");
 const { addComment, editComment, deleteComment } = require("../controllers/comments.controller");
 
@@ -67,6 +67,7 @@ router.post("/auth/users", createUser);
  *         description: Login error
  */
 router.post("/auth/users/login", login);
+router.delete("/auth/users", deleteUser)
 router.get("/posts", listPosts);
 router.post("/posts", authenticateToken, addPost);
 router.put("/posts/:id", authenticateToken, editPost); 

@@ -1,6 +1,7 @@
 const { PrismaClient, Prisma } = require("@prisma/client");
 const prisma = new PrismaClient();
 const bcrypt = require("bcrypt");
+const { urlencoded } = require("express");
 const jwt = require("jsonwebtoken");
 
 // Login function
@@ -47,7 +48,9 @@ const login = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Success Logging In!",
+      userId: user.id,  
       token,
+
     });
   } catch (err) {
     console.log(err);
@@ -113,4 +116,43 @@ const createUser = async (req, res) => {
   }
 };
 
-module.exports = { login, createUser };
+// Delete user function
+const deleteUser = async (req, res) => {
+  const { email } = req.body;
+  if (!email) {
+    return res.status(400).json({
+      success: false,
+      message: "Provide the email of the user to delete",
+    });
+  }
+
+  try {
+    const user = await prisma.user.delete({
+      where: { email },
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "User deleted successfully",
+      user,
+    });
+  } catch (err) {
+    console.log(err);
+    if (
+      err instanceof Prisma.PrismaClientKnownRequestError &&
+      err.code === "P2025"
+    ) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    return res.status(500).json({
+      success: false,
+      message: "Error deleting user",
+    });
+  }
+};
+
+
+module.exports = { login, createUser, deleteUser };
