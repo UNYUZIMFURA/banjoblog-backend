@@ -1,6 +1,7 @@
 const { PrismaClient } = require("@prisma/client")
 const prisma = new PrismaClient()
 
+// Function to find all posts
 const listPosts = async (req, res) => {
     try {
         const posts = await prisma.post.findMany({
@@ -34,7 +35,8 @@ const listPosts = async (req, res) => {
     }
 }
 
-
+//Function to create post.
+// It requires title and content
 const addPost = async (req, res) => { 
     const { title, content} = req.body
     if (!title || !content) {
@@ -65,6 +67,7 @@ const addPost = async (req, res) => {
     }
 }
 
+// Function to edit Post by id
 const editPost = async (req, res) => {
   const { id } = req.params;
   const { title, content } = req.body;
@@ -99,6 +102,7 @@ const editPost = async (req, res) => {
   }
 };
 
+// Function to delete post by id
 const deletePost = async (req, res) => {
   const { id } = req.params;
 
